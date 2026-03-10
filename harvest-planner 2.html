@@ -169,14 +169,14 @@ z-index: 0;
 .block-overlay {
 position: absolute;
 inset: 0;
-background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0.05) 100%);
+background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.05) 100%);
 z-index: 1;
 }
 
 /* Colored top accent bar per time of day */
-.block-morning .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 60%, rgba(180,120,30,0.25) 100%); }
-.block-afternoon .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 60%, rgba(40,100,70,0.25) 100%); }
-.block-evening .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 60%, rgba(50,50,120,0.25) 100%); }
+.block-morning .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.2) 60%, rgba(180,120,30,0.3) 100%); }
+.block-afternoon .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.2) 60%, rgba(40,100,70,0.3) 100%); }
+.block-evening .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.2) 60%, rgba(50,50,120,0.3) 100%); }
 
 .block-content {
 position: relative;
@@ -196,17 +196,18 @@ opacity: 0.85;
 .block-afternoon .block-label { color: #7dd4a8; }
 .block-evening .block-label { color: #a0aaee; }
 
-.block-kids { font-size: 0.65rem; color: rgba(255,255,255,0.75); margin-bottom: 3px; font-weight: 300; }
-.block-activity { font-size: 0.88rem; font-weight: 600; color: #fff; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+.block-kids { font-size: 0.65rem; color: rgba(255,255,255,0.95); margin-bottom: 3px; font-weight: 400; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+.block-activity { font-size: 0.88rem; font-weight: 600; color: #fff; line-height: 1.25; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
 
 .block-tap-hint {
-font-size: 0.55rem;
-color: rgba(255,255,255,0.5);
+font-size: 0.6rem;
+color: rgba(255,255,255,0.85);
 margin-top: 4px;
-font-weight: 300;
+font-weight: 400;
 display: flex;
 align-items: center;
 gap: 3px;
+text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 
 .no-kids {
@@ -242,11 +243,12 @@ animation: slideUp 0.25s ease;
 @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
 .modal-handle {
-width: 36px; height: 4px; background: var(–border);
-border-radius: 2px; margin: 0 auto 16px;
-padding: 12px 0;
+width: 48px; height: 5px; background: #c0cdd6;
+border-radius: 3px; margin: 0 auto 16px;
+padding: 14px 0;
 background-clip: content-box;
 cursor: grab;
+touch-action: none;
 }
 
 .modal-top-row {
@@ -857,40 +859,6 @@ function renderWeek(data) {
 })();
 
 loadWeather();
-
-// Swipe down to dismiss modal
-(function() {
-  const modal = document.getElementById('modal');
-  const overlay = document.getElementById('modal-overlay');
-  let startY = 0;
-  let currentY = 0;
-  let isDragging = false;
-
-  modal.addEventListener('touchstart', function(e) {
-    startY = e.touches[0].clientY;
-    isDragging = true;
-    modal.style.transition = 'none';
-  }, { passive: true });
-
-  modal.addEventListener('touchmove', function(e) {
-    if (!isDragging) return;
-    currentY = e.touches[0].clientY;
-    const diff = currentY - startY;
-    if (diff > 0) {
-      modal.style.transform = `translateY(${diff}px)`;
-    }
-  }, { passive: true });
-
-  modal.addEventListener('touchend', function() {
-    isDragging = false;
-    modal.style.transition = 'transform 0.25s ease';
-    const diff = currentY - startY;
-    if (diff > 80) {
-      overlay.classList.remove('open');
-    }
-    modal.style.transform = '';
-  });
-})();
 </script>
 
 </body>
