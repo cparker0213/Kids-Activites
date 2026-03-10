@@ -596,10 +596,11 @@ async function fetchPhoto(query) {
 }
 
 // ── Google Calendar URL builder ───────────────────────────────────────────
-function buildCalUrl(title, dateObj, startTime, endTime) {
-  const dateStr = dateObj.toISOString().split('T')[0].replace(/-/g, '');
-  const start = dateStr + 'T' + startTime.replace(':', '') + '00';
-  const end   = dateStr + 'T' + endTime.replace(':', '') + '00';
+function buildCalUrl(title, dateStr, startTime, endTime) {
+  // dateStr is "YYYY-MM-DD" -- use directly, no timezone conversion
+  const d = dateStr.replace(/-/g, '');
+  const start = d + 'T' + startTime.replace(':', '') + '00';
+  const end   = d + 'T' + endTime.replace(':', '') + '00';
   const params = new URLSearchParams({
     action: 'TEMPLATE',
     text: title,
@@ -611,7 +612,7 @@ function buildCalUrl(title, dateObj, startTime, endTime) {
 // ── Modal ─────────────────────────────────────────────────────────────────
 let currentModalPhoto = null;
 
-function openModal(key, kids, dateObj, block) {
+function openModal(key, kids, dateStr, block) {
   const a = ACTIVITIES[key];
   if (!a) return;
   const bt = BLOCK_TIMES[block];
@@ -640,10 +641,12 @@ function openModal(key, kids, dateObj, block) {
     mapsBtn.style.display = 'none';
   }
 
-  // Calendar button
-  const kidsLabel = kids.length === 1 ? kids[0] : kids.slice(0, -1).join(', ') + ' & ' + kids[kids.length - 1];
+  // Calendar button -- always visible
+  const kidsLabel = kids.length === 0 ? '' : kids.length === 1 ? kids[0] : kids.slice(0, -1).join(', ') + ' & ' + kids[kids.length - 1];
   const calTitle = kids.length > 0 ? `${a.act} with ${kidsLabel}` : a.act;
-  document.getElementById('modal-cal-btn').href = buildCalUrl(calTitle, dateObj, bt.start, bt.end);
+  const calBtn = document.getElementById('modal-cal-btn');
+  calBtn.href = buildCalUrl(calTitle, dateStr, bt.start, bt.end);
+  calBtn.style.display = 'flex';
 
   // Photo
   const photoEl = document.getElementById('modal-photo');
@@ -774,9 +777,8 @@ function renderWeek(data) {
     const actKey = block.getAttribute('data-act');
     const kids = JSON.parse(decodeURIComponent(block.getAttribute('data-kids')));
     const dateStr = block.getAttribute('data-date');
-    const dateObj = new Date(dateStr + 'T12:00:00');
     const blockKey = block.getAttribute('data-block');
-    openModal(actKey, kids, dateObj, blockKey);
+    openModal(actKey, kids, dateStr, blockKey);
   });
 }
 
