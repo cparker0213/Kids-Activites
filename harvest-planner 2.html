@@ -241,7 +241,13 @@ animation: slideUp 0.25s ease;
 }
 @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-.modal-handle { width: 36px; height: 4px; background: var(–border); border-radius: 2px; margin: 0 auto 16px; }
+.modal-handle {
+width: 36px; height: 4px; background: var(–border);
+border-radius: 2px; margin: 0 auto 16px;
+padding: 12px 0;
+background-clip: content-box;
+cursor: grab;
+}
 
 .modal-top-row {
 display: flex;
@@ -815,29 +821,32 @@ function renderWeek(data) {
   let startY = 0;
   let isDragging = false;
   const modal = document.getElementById('modal');
+  const handle = modal.querySelector('.modal-handle');
+  const overlay = document.getElementById('modal-overlay');
 
-  modal.addEventListener('touchstart', function(e) {
+  handle.addEventListener('touchstart', function(e) {
     startY = e.touches[0].clientY;
     isDragging = true;
+    modal.style.transition = 'none';
   }, { passive: true });
 
-  modal.addEventListener('touchmove', function(e) {
+  handle.addEventListener('touchmove', function(e) {
     if (!isDragging) return;
     const delta = e.touches[0].clientY - startY;
     if (delta > 0) {
       modal.style.transform = `translateY(${delta}px)`;
-      modal.style.transition = 'none';
     }
   }, { passive: true });
 
-  modal.addEventListener('touchend', function(e) {
+  handle.addEventListener('touchend', function(e) {
+    if (!isDragging) return;
     isDragging = false;
     const delta = e.changedTouches[0].clientY - startY;
     modal.style.transition = 'transform 0.25s ease';
-    if (delta > 100) {
+    if (delta > 80) {
       modal.style.transform = 'translateY(100%)';
       setTimeout(() => {
-        document.getElementById('modal-overlay').classList.remove('open');
+        overlay.classList.remove('open');
         modal.style.transform = '';
         modal.style.transition = '';
       }, 250);
