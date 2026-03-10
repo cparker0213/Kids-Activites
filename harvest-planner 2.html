@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,13 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --sky: #e8f4f8;
     --deep: #1a2e3b;
     --warm: #c8773a;
     --warm-light: #f5e6d8;
     --green: #3d7a5e;
     --green-light: #e0ede7;
-    --sand: #f2ead8;
     --text: #1a2e3b;
     --muted: #6b8090;
     --border: #d4dde3;
@@ -24,495 +23,666 @@
     --card-bg: #ffffff;
     --bg: #f4f7f9;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+header {
+background: var(–deep);
+padding: 24px 24px 16px;
+}
+.header-top {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 12px;
+}
+.header-left h1 {
+font-family: ‘DM Serif Display’, serif;
+font-size: 1.7rem;
+color: #fff;
+line-height: 1.1;
+letter-spacing: -0.02em;
+}
+.header-left p {
+font-size: 0.72rem;
+color: #8fa8b8;
+margin-top: 4px;
+font-weight: 300;
+letter-spacing: 0.04em;
+text-transform: uppercase;
+}
+.last-updated {
+font-size: 0.68rem;
+color: #8fa8b8;
+text-align: right;
+font-weight: 300;
+white-space: nowrap;
+margin-top: 4px;
+}
+.week-range-label {
+font-size: 0.7rem;
+color: #8fa8b8;
+margin-top: 10px;
+font-weight: 300;
+}
 
-  header {
-    background: var(--deep);
-    padding: 28px 32px 24px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 16px;
-  }
+.legend {
+display: flex;
+gap: 14px;
+padding: 10px 24px;
+background: var(–deep);
+border-top: 1px solid #2a3f50;
+flex-wrap: wrap;
+}
+.legend-item {
+display: flex;
+align-items: center;
+gap: 5px;
+font-size: 0.68rem;
+color: #8fa8b8;
+font-weight: 300;
+}
+.legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-  .header-left h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.9rem;
-    color: #ffffff;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
+.main { padding: 20px 16px 60px; max-width: 1200px; margin: 0 auto; }
 
-  .header-left p {
-    font-size: 0.8rem;
-    color: #8fa8b8;
-    margin-top: 5px;
-    font-weight: 300;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
+#loading { text-align: center; padding: 80px 20px; color: var(–muted); font-size: 0.9rem; font-weight: 300; }
+.spinner { width: 28px; height: 28px; border: 2px solid var(–border); border-top-color: var(–warm); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  .week-label {
-    font-size: 0.75rem;
-    color: #8fa8b8;
-    text-align: right;
-    font-weight: 300;
-  }
+.week-grid {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 10px;
+}
+@media (max-width: 900px) { .week-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 540px) { .week-grid { grid-template-columns: 1fr; } .main { padding: 14px 12px 60px; } }
 
-  .legend {
-    display: flex;
-    gap: 16px;
-    padding: 12px 32px;
-    background: var(--deep);
-    border-top: 1px solid #2a3f50;
-    flex-wrap: wrap;
-  }
+.day-card {
+background: var(–card-bg);
+border-radius: 10px;
+overflow: hidden;
+border: 1px solid var(–border);
+display: flex;
+flex-direction: column;
+transition: box-shadow 0.15s;
+}
+.day-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
+.day-card.today .day-header { background: var(–warm); }
+.day-card.today .day-name, .day-card.today .day-date { color: #fff; }
 
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.7rem;
-    color: #8fa8b8;
-    font-weight: 300;
-    letter-spacing: 0.03em;
-  }
+.day-header { background: var(–deep); padding: 10px 12px 9px; }
+.day-name { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #8fa8b8; }
+.day-date { font-family: ‘DM Serif Display’, serif; font-size: 1.4rem; color: #fff; line-height: 1; margin-top: 2px; }
 
-  .legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+.day-weather {
+padding: 9px 12px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 6px;
+}
+.temp-range { font-size: 0.78rem; font-weight: 500; }
+.temp-range span { color: var(–muted); font-weight: 300; font-size: 0.72rem; }
+.rain-pct { font-size: 0.65rem; color: var(–rain); font-weight: 300; }
 
-  .main {
-    padding: 24px 24px 48px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
+.condition-badge {
+font-size: 0.62rem; font-weight: 500; letter-spacing: 0.04em;
+padding: 3px 7px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+}
+.badge-normal { background: var(–green-light); color: var(–green); }
+.badge-hot { background: var(–hot-light); color: var(–hot); }
+.badge-rain { background: var(–rain-light); color: var(–rain); }
 
-  #loading {
-    text-align: center;
-    padding: 80px 20px;
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 300;
-  }
+.blocks { padding: 9px 10px 10px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
 
-  .spinner {
-    width: 32px;
-    height: 32px;
-    border: 2px solid var(--border);
-    border-top-color: var(--warm);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 16px;
-  }
+/* Image-as-tile block */
+.time-block {
+border-radius: 8px;
+overflow: hidden;
+cursor: pointer;
+position: relative;
+min-height: 90px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+transition: transform 0.15s, box-shadow 0.15s;
+background: #2a3a45;
+}
+.time-block:hover { transform: scale(1.01); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.time-block:active { transform: scale(0.99); }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+.block-bg-img {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+opacity: 0;
+transition: opacity 0.5s ease;
+z-index: 0;
+}
+.block-bg-img.loaded { opacity: 1; }
 
-  .week-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-  }
+/* Gradient overlay so text is readable */
+.block-overlay {
+position: absolute;
+inset: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0.05) 100%);
+z-index: 1;
+}
 
-  @media (max-width: 900px) {
-    .week-grid { grid-template-columns: repeat(3, 1fr); }
-    header { flex-direction: column; align-items: flex-start; }
-  }
+/* Colored top accent bar per time of day */
+.block-morning .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 60%, rgba(180,120,30,0.25) 100%); }
+.block-afternoon .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 60%, rgba(40,100,70,0.25) 100%); }
+.block-evening .block-overlay { background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 60%, rgba(50,50,120,0.25) 100%); }
 
-  @media (max-width: 540px) {
-    .week-grid { grid-template-columns: 1fr; }
-    .main { padding: 16px 16px 48px; }
-  }
+.block-content {
+position: relative;
+z-index: 2;
+padding: 8px 10px;
+}
 
-  .day-card {
-    background: var(--card-bg);
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    transition: box-shadow 0.15s;
-  }
+.block-label {
+font-size: 0.55rem;
+font-weight: 600;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+margin-bottom: 2px;
+opacity: 0.85;
+}
+.block-morning .block-label { color: #f5c87a; }
+.block-afternoon .block-label { color: #7dd4a8; }
+.block-evening .block-label { color: #a0aaee; }
 
-  .day-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  }
+.block-kids { font-size: 0.58rem; color: rgba(255,255,255,0.7); margin-bottom: 3px; font-weight: 300; }
+.block-activity { font-size: 0.75rem; font-weight: 600; color: #fff; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
 
-  .day-card.today .day-header {
-    background: var(--warm);
-  }
+.block-tap-hint {
+font-size: 0.55rem;
+color: rgba(255,255,255,0.5);
+margin-top: 4px;
+font-weight: 300;
+display: flex;
+align-items: center;
+gap: 3px;
+}
 
-  .day-card.today .day-name,
-  .day-card.today .day-date {
-    color: #fff;
-  }
+.no-kids {
+position: relative; z-index: 2;
+font-size: 0.7rem; color: rgba(255,255,255,0.4);
+font-style: italic; font-weight: 300;
+padding: 8px 10px;
+}
+.error-msg { text-align: center; padding: 60px 20px; color: var(–muted); }
 
-  .day-header {
-    background: var(--deep);
-    padding: 12px 14px 10px;
-  }
+/* ── Detail Modal ── */
+.modal-overlay {
+display: none;
+position: fixed; inset: 0;
+background: rgba(0,0,0,0.55);
+z-index: 100;
+align-items: flex-end;
+justify-content: center;
+padding: 0;
+}
+.modal-overlay.open { display: flex; }
 
-  .day-name {
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #8fa8b8;
-  }
+.modal {
+background: #fff;
+border-radius: 16px 16px 0 0;
+width: 100%;
+max-width: 600px;
+max-height: 85vh;
+overflow-y: auto;
+padding: 20px 20px 36px;
+animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-  .day-date {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    color: #ffffff;
-    line-height: 1;
-    margin-top: 2px;
-  }
+.modal-handle { width: 36px; height: 4px; background: var(–border); border-radius: 2px; margin: 0 auto 16px; }
+.modal-category { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(–muted); margin-bottom: 6px; }
+.modal-title { font-family: ‘DM Serif Display’, serif; font-size: 1.4rem; color: var(–text); line-height: 1.2; margin-bottom: 8px; }
+.modal-photo { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; margin-bottom: 14px; background: var(–border); }
+.modal-address {
+display: flex; align-items: center; gap: 7px;
+font-size: 0.75rem; color: var(–muted); margin-bottom: 12px;
+font-weight: 300;
+}
+.modal-address a { color: var(–warm); text-decoration: none; font-weight: 500; }
+.modal-description { font-size: 0.82rem; line-height: 1.6; color: var(–text); margin-bottom: 16px; }
+.modal-kids { font-size: 0.72rem; color: var(–muted); margin-bottom: 16px; font-weight: 300; }
 
-  .day-weather {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
+.modal-actions { display: flex; flex-direction: column; gap: 9px; }
 
-  .temp-range {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text);
-  }
+.btn-cal {
+display: flex; align-items: center; justify-content: center; gap: 8px;
+background: var(–deep); color: #fff;
+border: none; border-radius: 8px; padding: 12px 16px;
+font-family: ‘DM Sans’, sans-serif; font-size: 0.8rem; font-weight: 500;
+cursor: pointer; text-decoration: none; width: 100%;
+}
+.btn-cal:hover { background: #243d50; }
 
-  .temp-range span {
-    color: var(--muted);
-    font-weight: 300;
-    font-size: 0.75rem;
-  }
+.btn-maps {
+display: flex; align-items: center; justify-content: center; gap: 8px;
+background: #e8f5e9; color: #2e7d32;
+border: 1px solid #c8e6c9; border-radius: 8px; padding: 11px 16px;
+font-family: ‘DM Sans’, sans-serif; font-size: 0.8rem; font-weight: 500;
+cursor: pointer; text-decoration: none; width: 100%;
+}
 
-  .condition-badge {
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    padding: 3px 8px;
-    border-radius: 20px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .badge-normal { background: var(--green-light); color: var(--green); }
-  .badge-hot { background: var(--hot-light); color: var(--hot); }
-  .badge-rain { background: var(--rain-light); color: var(--rain); }
-  .badge-pool { background: #e3f0f8; color: #2565a3; }
-
-  .blocks {
-    padding: 10px 12px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-  }
-
-  .time-block {
-    border-radius: 8px;
-    padding: 9px 11px;
-    border: 1px solid transparent;
-  }
-
-  .block-morning { background: #fdf9f3; border-color: #ecdfc8; }
-  .block-afternoon { background: #f3f8f3; border-color: #c8dcc8; }
-  .block-evening { background: #f3f4fa; border-color: #c8cce8; }
-
-  .block-label {
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .block-morning .block-label { color: #a07830; }
-  .block-afternoon .block-label { color: #3d7a5e; }
-  .block-evening .block-label { color: #4a4a90; }
-
-  .block-kids {
-    font-size: 0.62rem;
-    color: var(--muted);
-    margin-bottom: 5px;
-    font-weight: 300;
-  }
-
-  .block-activity {
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.35;
-  }
-
-  .block-note {
-    font-size: 0.68rem;
-    color: var(--muted);
-    margin-top: 3px;
-    font-weight: 300;
-    line-height: 1.3;
-  }
-
-  .block-photo {
-    width: 100%;
-    height: 75px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-top: 7px;
-    display: block;
-    background: var(--border);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-
-  .block-photo.loaded {
-    opacity: 1;
-  }
-
-  .no-kids {
-    font-size: 0.72rem;
-    color: #b0bec5;
-    font-style: italic;
-    font-weight: 300;
-  }
-
-  .rain-pct {
-    font-size: 0.68rem;
-    color: var(--rain);
-    font-weight: 300;
-  }
-
-  .error-msg {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
-  }
-
-  .updated-note {
-    text-align: center;
-    font-size: 0.7rem;
-    color: var(--muted);
-    margin-top: 20px;
-    font-weight: 300;
-    letter-spacing: 0.03em;
-  }
+.btn-close {
+background: none; border: 1px solid var(–border); border-radius: 8px;
+padding: 11px 16px; font-family: ‘DM Sans’, sans-serif; font-size: 0.8rem;
+color: var(–muted); cursor: pointer; width: 100%;
+}
 </style>
+
 </head>
 <body>
 
 <header>
-  <div class="header-left">
-    <h1>Harvest Family Planner</h1>
-    <p>Northlake, Texas &mdash; Activity Guide</p>
+  <div class="header-top">
+    <div class="header-left">
+      <h1>Harvest Family Planner</h1>
+      <p>Northlake, Texas &mdash; Activity Guide</p>
+    </div>
+    <div class="last-updated" id="last-updated">Loading...</div>
   </div>
-  <div class="week-label" id="week-range"></div>
+  <div class="week-range-label" id="week-range"></div>
 </header>
 
 <div class="legend">
   <div class="legend-item"><div class="legend-dot" style="background:#8fa8b8"></div>Morning 8–11am</div>
   <div class="legend-item"><div class="legend-dot" style="background:#3d7a5e"></div>Afternoon 2–4:30pm</div>
   <div class="legend-item"><div class="legend-dot" style="background:#4a4a90"></div>Evening 4:30–7pm</div>
+  <div class="legend-item" style="margin-left:auto;font-style:italic">Tap any activity for details</div>
 </div>
 
 <div class="main">
   <div id="loading"><div class="spinner"></div>Fetching forecast for Northlake...</div>
   <div id="content" style="display:none">
     <div class="week-grid" id="week-grid"></div>
-    <div class="updated-note" id="updated-note"></div>
   </div>
   <div id="error" style="display:none" class="error-msg">Unable to load weather data. Please try again.</div>
 </div>
 
+<!-- Detail Modal -->
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-category" id="modal-category"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <img class="modal-photo" id="modal-photo" src="" alt="" />
+    <div class="modal-address" id="modal-address"></div>
+    <div class="modal-description" id="modal-description"></div>
+    <div class="modal-kids" id="modal-kids"></div>
+    <div class="modal-actions">
+      <a class="btn-cal" id="modal-cal-btn" href="#" target="_blank">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Add to Google Calendar
+      </a>
+      <a class="btn-maps" id="modal-maps-btn" href="#" target="_blank">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Open in Waze
+      </a>
+      <button class="btn-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ── Config ──────────────────────────────────────────────────────────────
 const LAT = 33.0762;
 const LON = -97.2636;
-const HEAT_THRESHOLD = 95; // °F
+const HEAT_THRESHOLD = 95;
 const UNSPLASH_KEY = 'kIiAfUKgXNTzkA2au3ZNwmo_rUwvAsLPcXvXWZI6aHg';
-
-// Photo cache to avoid duplicate API calls
 const photoCache = {};
 
-// Map activity keywords to better Unsplash search terms
-function getPhotoQuery(activityText) {
-  const a = activityText.toLowerCase();
-  if (a.includes('trail') || a.includes('scooter')) return 'family trail walk nature';
-  if (a.includes('playground')) return 'children playground outdoor';
-  if (a.includes('farm')) return 'family farm garden children';
-  if (a.includes('bike')) return 'family bike ride path';
-  if (a.includes('lake')) return 'lake path walk family';
-  if (a.includes('volleyball') || a.includes('sand')) return 'children playing sand outdoor';
-  if (a.includes('pool') || a.includes('splash')) return 'children splash pad pool summer';
-  if (a.includes('picnic')) return 'family picnic park outdoor';
-  if (a.includes('basketball') || a.includes('court')) return 'kids basketball court outdoor';
-  if (a.includes('backyard') || a.includes('cul-de-sac')) return 'children backyard play chalk bubbles';
-  if (a.includes('craft') || a.includes('sensory')) return 'children craft art play indoor';
-  if (a.includes('coffee') || a.includes('farmhouse')) return 'cozy coffee shop morning';
-  if (a.includes('library') || a.includes('reading')) return 'children library reading books';
-  if (a.includes('lego') || a.includes('build')) return 'children building blocks play indoor';
-  if (a.includes('walk') || a.includes('neighborhood')) return 'family neighborhood morning walk';
-  if (a.includes('dinner') || a.includes('lawn')) return 'family outdoor dinner picnic lawn';
-  return 'family outdoor activity children';
-}
+// ── Activity database with full details ─────────────────────────────────
+const ACTIVITIES = {
+  // OUTDOOR - in neighborhood
+  trail_walk: {
+    act: 'Trail walk or scooter ride',
+    description: 'The Harvest linear trail system runs through the community with 1.5+ miles of paved, stroller-friendly paths. Great morning activity before heat picks up. Older kids can scoot ahead while you push the stroller.',
+    address: 'Harvest Community Trail, Argyle, TX 76226',
+    maps: 'Harvest+Community+Trail+Argyle+TX',
+    photo: 'family trail walk nature children',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  playground: {
+    act: 'Neighborhood playground',
+    description: "Central Park playground in Harvest has equipment for a range of ages including toddler-appropriate areas. It's the hub of the community — open field nearby is good for the older kids to run.",
+    address: 'Central Park, Harvest Community, Argyle, TX 76226',
+    maps: 'Central+Park+Harvest+Argyle+TX',
+    photo: 'children playground outdoor sunny',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  farm_visit: {
+    act: 'Harvest community farm visit',
+    description: "The Harvest community farm and garden area is a low-key outdoor outing. Kids can explore the garden beds and open green space. The 4-year-old age group especially enjoys the novelty of it.",
+    address: 'Harvest Community Farm, Argyle, TX 76226',
+    maps: 'Harvest+Community+Farm+Argyle+TX',
+    photo: 'community garden farm children explore',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  bike_ride: {
+    act: 'Bike ride on the trail',
+    description: 'The flat Harvest trail system is perfect for family bike rides. Older kids on bikes, Emme in a stroller or bike seat. The loop around the lake adds a scenic element and keeps it interesting.',
+    address: 'Harvest Community Trail, Argyle, TX 76226',
+    maps: 'Harvest+Community+Trail+Argyle+TX',
+    photo: 'family bike ride path children',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  lake_walk: {
+    act: 'Lake loop walk',
+    description: "Harvest's 11-acre lake has a walking path around the perimeter. Calm, open, and stroller-friendly. Good for an afternoon reset — kids can spot ducks and fish along the edge.",
+    address: 'Harvest Lake, Argyle, TX 76226',
+    maps: 'Harvest+Lake+Argyle+TX',
+    photo: 'lake walk family path afternoon',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  sand_volleyball: {
+    act: 'Sand volleyball courts',
+    description: 'The Harvest sand volleyball courts double as a great dig zone for toddlers. Emme can dig in the sand while the older kids run and play. Bring snacks and make it an extended hang.',
+    address: 'Harvest Amenity Center, Argyle, TX 76226',
+    maps: 'Harvest+Amenity+Center+Argyle+TX',
+    photo: 'children playing sand outdoor sunny',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  pool: {
+    act: 'Pool day at Harvest',
+    description: "Harvest has three community pools. The splash pad and water play area is the right call when Emme is with you. The main resort pool works well when it's just the older kids. Best summer activity when temps spike.",
+    address: 'Harvest Resort Pool, Argyle, TX 76226',
+    maps: 'Harvest+Pool+Argyle+TX',
+    photo: 'children splash pad pool summer play',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  picnic_lawn: {
+    act: 'Picnic at the event lawn',
+    description: 'Pack dinner or snacks and set up on the Harvest event lawn. Kids can run the open space while you decompress. The pavilion area works well for a blanket setup with portable chairs.',
+    address: 'Harvest Event Lawn, Argyle, TX 76226',
+    maps: 'Harvest+Event+Lawn+Argyle+TX',
+    photo: 'family picnic outdoor lawn evening',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  basketball: {
+    act: 'Basketball court',
+    description: "Harvest has outdoor basketball courts available to residents. Good evening activity for Lera to work on dribbling and shooting while the younger kids run the sidelines. Low-effort, no setup required.",
+    address: 'Harvest Community Courts, Argyle, TX 76226',
+    maps: 'Harvest+Community+Courts+Argyle+TX',
+    photo: 'kids basketball court outdoor evening',
+    category: 'Outdoor / Neighborhood',
+    indoor: false,
+  },
+  backyard: {
+    act: 'Backyard or cul-de-sac play',
+    description: 'Sometimes the lowest-effort option is the right one. Chalk, bubbles, and ride-ons for Emme while the older kids free-play. No driving, no setup, no cost.',
+    address: 'Home',
+    maps: null,
+    photo: 'children backyard play chalk bubbles',
+    category: 'Outdoor / Home',
+    indoor: false,
+  },
+  // OUTDOOR - nearby (within 5 miles)
+  median_park: {
+    act: 'Robson Ranch Park',
+    description: 'A quiet community park about 3 miles from Harvest with open green space, walking paths, and playground equipment. Less crowded than Harvest on weekends — good change of scenery.',
+    address: '9820 Ed Robson Blvd, Denton, TX 76207',
+    maps: '9820+Ed+Robson+Blvd+Denton+TX',
+    photo: 'neighborhood park green space children',
+    category: 'Outdoor / Nearby',
+    indoor: false,
+  },
+  crawford_park: {
+    act: 'Crawford Park – Denton',
+    description: 'One of Denton\'s best family parks, about 5 miles from Harvest. Large playground, open fields, and a small pond. Plenty of shade trees which matters in Texas summers. Good for a longer outing.',
+    address: '1200 Malone St, Denton, TX 76201',
+    maps: '1200+Malone+St+Denton+TX',
+    photo: 'park playground children shade trees',
+    category: 'Outdoor / Nearby',
+    indoor: false,
+  },
+  // INDOOR - in neighborhood
+  farmhouse_coffee: {
+    act: 'Farmhouse Coffee',
+    description: "Harvest's own coffee shop inside the community. Low-key outing for a weekday morning — grab a coffee, let the kids get out of the house without a long drive. Good option when it's light rain.",
+    address: 'Farmhouse Coffee, Harvest Community, Argyle, TX 76226',
+    maps: 'Farmhouse+Coffee+Harvest+Argyle+TX',
+    photo: 'cozy coffee shop morning family',
+    category: 'Indoor / Neighborhood',
+    indoor: true,
+  },
+  // INDOOR - nearby
+  crafts_home: {
+    act: 'Indoor craft or sensory play',
+    description: 'Finger painting, playdough, kinetic sand, or a water table set up in the garage. No driving required. Emme especially engages well with sensory activities at this age. Good rainy day default.',
+    address: 'Home',
+    maps: null,
+    photo: 'children craft art sensory play indoor',
+    category: 'Indoor / Home',
+    indoor: true,
+  },
+  build_play: {
+    act: 'Build and play day at home',
+    description: 'LEGO and building sets for Lera and Sylvi; stacking toys, tunnels, and soft blocks for Emme. Good for a full morning or afternoon when weather is bad and you want a low-effort structured activity.',
+    address: 'Home',
+    maps: null,
+    photo: 'children building blocks lego play',
+    category: 'Indoor / Home',
+    indoor: true,
+  },
+  kidspark: {
+    act: 'KidsPark – Denton',
+    description: "KidsPark in Denton is a drop-in childcare and play center about 4 miles from Harvest. Good option for a structured indoor activity with other kids. Works well for Sylvi and Lera on rainy or extreme heat days.",
+    address: '2500 Lillian Miller Pkwy, Denton, TX 76210',
+    maps: '2500+Lillian+Miller+Pkwy+Denton+TX',
+    photo: 'indoor play center children',
+    category: 'Indoor / Nearby',
+    indoor: true,
+  },
+  jump_zone: {
+    act: 'Sky Zone Trampoline Park – Denton',
+    description: 'Sky Zone in Denton is about 5 miles from Harvest. Good for Lera and Sylvi on a rainy or hot day — they burn energy, you survive. Toddler zones available for Emme as well.',
+    address: '2510 Scripture St, Denton, TX 76201',
+    maps: '2510+Scripture+St+Denton+TX',
+    photo: 'trampoline park children jumping indoor',
+    category: 'Indoor / Nearby',
+    indoor: true,
+  },
+  library: {
+    act: 'Argyle Public Library',
+    description: "The Argyle Public Library is small but good for kids — story time programs, a dedicated children's section, and a calm environment. Good weekday morning option when Emme and Sylvi are both home.",
+    address: '300 Denton St, Argyle, TX 76226',
+    maps: '300+Denton+St+Argyle+TX',
+    photo: 'children library reading books cozy',
+    category: 'Indoor / Nearby',
+    indoor: true,
+  },
+  discovery_village: {
+    act: 'Discovery Village – Denton',
+    description: 'A hands-on children\'s museum in Denton, roughly 5 miles from Harvest. Interactive exhibits designed for kids under 10 — good fit for all three of your kids. Plan for 1.5-2 hours.',
+    address: '302 N Locust St, Denton, TX 76201',
+    maps: '302+N+Locust+St+Denton+TX',
+    photo: 'childrens museum interactive exhibits kids',
+    category: 'Indoor / Nearby',
+    indoor: true,
+  },
+};
 
-async function fetchPhoto(query) {
-  if (photoCache[query]) return photoCache[query];
-  try {
-    const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=5&orientation=landscape&client_id=${UNSPLASH_KEY}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.results && data.results.length > 0) {
-      // Pick a random result from top 5 for variety
-      const idx = Math.floor(Math.random() * Math.min(5, data.results.length));
-      const photoUrl = data.results[idx].urls.small;
-      photoCache[query] = photoUrl;
-      return photoUrl;
-    }
-  } catch (e) {}
-  return null;
-}
+// ── Schedule logic ────────────────────────────────────────────────────────
+const BLOCK_TIMES = {
+  morning:   { start: '08:00', end: '08:30', label: 'Morning',   display: '8 – 11am' },
+  afternoon: { start: '14:00', end: '14:30', label: 'Afternoon', display: '2 – 4:30pm' },
+  evening:   { start: '16:30', end: '17:00', label: 'Evening',   display: '4:30 – 7pm' },
+};
 
-// Kid schedule helper
 function getKidsAvailable(date) {
-  const dow = date.getDay(); // 0=Sun,1=Mon,...,6=Sat
+  const dow = date.getDay();
   const isWeekend = dow === 0 || dow === 6;
-  if (isWeekend) return { morning: ['Lera (7)', 'Sylvi (4)', 'Emme (20m)'], afternoon: ['Lera (7)', 'Sylvi (4)', 'Emme (20m)'], evening: ['Lera (7)', 'Sylvi (4)', 'Emme (20m)'] };
-  // Weekday
+  if (isWeekend) return {
+    morning:   ['Lera', 'Sylvi', 'Emme'],
+    afternoon: ['Lera', 'Sylvi', 'Emme'],
+    evening:   ['Lera', 'Sylvi', 'Emme'],
+  };
   const morning = [];
   const afternoon = [];
-  const evening = ['Lera (7)', 'Sylvi (4)', 'Emme (20m)'];
-
-  // 7yo: school 7am-3:30pm (not available morning/early afternoon)
-  // 4yo: daycare Mon+Wed 9am-2:30pm; otherwise home
-  // 20mo: home always, naps 11am-2pm
-
-  // Morning block: 8-11am
-  // 7yo: at school — no
-  // 20mo: awake — yes
+  // Mon=1, Wed=3: Sylvi at daycare
   if (dow === 1 || dow === 3) {
-    // Mon or Wed: 4yo at daycare
-    morning.push('Emme (20m)');
+    morning.push('Emme');
+    afternoon.push('Sylvi', 'Emme');
   } else {
-    // Tue, Thu, Fri: 4yo home
-    morning.push('Sylvi (4)', 'Emme (20m)');
+    morning.push('Sylvi', 'Emme');
+    afternoon.push('Sylvi', 'Emme');
   }
-
-  // Afternoon block: 2-4:30pm
-  // 7yo: home after 3:30 — not in this block
-  // 20mo: nap ends ~2pm — available after 2
-  // 4yo: Mon/Wed pickup 2:30, otherwise home after daycare drop (Tue/Thu/Fri available all day)
-  if (dow === 1 || dow === 3) {
-    // Mon/Wed: 4yo back by 2:30 — call it available
-    afternoon.push('Sylvi (4)', 'Emme (20m)');
-  } else {
-    afternoon.push('Sylvi (4)', 'Emme (20m)');
-  }
-
-  return { morning, afternoon, evening };
+  return { morning, afternoon, evening: ['Lera', 'Sylvi', 'Emme'] };
 }
 
-function getWeekLabel(dates) {
-  const opts = { month: 'short', day: 'numeric' };
-  return `${dates[0].toLocaleDateString('en-US', opts)} – ${dates[6].toLocaleDateString('en-US', opts)}, ${dates[6].getFullYear()}`;
-}
-
-// Weather condition interpretation
-function interpretWeather(maxTempF, precipProb, windSpeed) {
+function interpretWeather(maxTempF, precipProb) {
   if (precipProb >= 50) return { label: 'Rain likely', cls: 'badge-rain', mode: 'rain' };
   if (maxTempF >= HEAT_THRESHOLD) return { label: 'Extreme heat', cls: 'badge-hot', mode: 'hot' };
   if (maxTempF >= 85) return { label: 'Warm', cls: 'badge-normal', mode: 'warm' };
   return { label: 'Good', cls: 'badge-normal', mode: 'good' };
 }
 
-// Activity logic
-function getActivity(block, kids, mode, precipProb, maxTempF) {
-  if (kids.length === 0) return null;
-
-  const hasInfant = kids.some(k => k.includes('20m'));
-  const hasFour = kids.some(k => k.includes('(4)'));
-  const hasSeven = kids.some(k => k.includes('(7)'));
-  const allThree = hasInfant && hasFour && hasSeven;
+// Activity rotation — use dayIndex + blockIndex to vary across week
+function getActivityKey(block, mode, dayIndex) {
+  const seed = dayIndex * 3 + ['morning','afternoon','evening'].indexOf(block);
 
   if (mode === 'rain') {
-    const indoorActivities = [
-      { act: 'Indoor craft or sensory play at home', note: 'Finger painting, playdough, or water table in the garage' },
-      { act: 'Farmer\'s Market or Farmhouse Coffee run', note: 'Quick outing if rain is light; Harvest\'s covered areas work well' },
-      { act: 'Library or indoor reading time', note: 'Keller Public Library has a strong kids section' },
-      { act: 'Build and play day at home', note: 'LEGO for the older kids; stacking toys and tunnels for the baby' },
-    ];
-    const i = (hasInfant ? 0 : 1) + (block === 'morning' ? 0 : block === 'afternoon' ? 1 : 2);
-    return indoorActivities[i % indoorActivities.length];
+    const pool = ['crafts_home', 'build_play', 'library', 'kidspark', 'jump_zone', 'farmhouse_coffee', 'discovery_village'];
+    return pool[seed % pool.length];
   }
-
   if (mode === 'hot') {
-    if (block === 'morning') {
-      // Before heat peaks — outdoor still viable early
-      if (maxTempF >= 100) return { act: 'Quick neighborhood walk or park visit', note: 'Go early (before 9am); the linear park trail stays shaded along parts of the route' };
-      return { act: 'Neighborhood playground at Central Park', note: 'Morning is the best window before heat peaks — bring water and sunscreen' };
-    }
-    if (block === 'afternoon') {
-      return { act: 'Pool day at Harvest', note: 'Water play area is ideal for the baby; three pools across the community — go to the one with the splash pad for the little ones' };
-    }
-    if (block === 'evening') {
-      return { act: 'Evening walk or bike ride on the trail', note: 'Temps usually drop meaningfully after 6:30pm in summer — linear trail or lake loop works well' };
-    }
+    if (block === 'morning') return seed % 2 === 0 ? 'playground' : 'trail_walk';
+    if (block === 'afternoon') return 'pool';
+    if (block === 'evening') return seed % 2 === 0 ? 'lake_walk' : 'backyard';
   }
-
-  // Good or warm conditions
-  const activities = {
-    morning: [
-      { act: 'Central Park trail walk or scooter ride', note: '1.5-mile loop; stroller-friendly. Good for all ages — older kids can scoot ahead', kids: ['all'] },
-      { act: 'Neighborhood playground', note: 'Central Park playground has equipment across age ranges including infant-appropriate areas', kids: ['all'] },
-      { act: 'Harvest community farm visit', note: 'The farm/garden area is a low-key outing for the younger kids; the 4-year-old especially enjoys it', kids: ['young'] },
-      { act: 'Bike ride on the trail', note: 'Older kids on bikes, baby in the stroller or bike seat; flat trail makes it easy', kids: ['all'] },
-    ],
-    afternoon: [
-      { act: 'Lake area exploration', note: '11-acre lake has walking paths around the perimeter; calm and open, good for strollers', kids: ['all'] },
-      { act: 'Sand volleyball or open field play', note: 'Sand is great for the baby to dig in while the older kids run; bring snacks', kids: ['all'] },
-      { act: 'Pool or splash pad', note: 'Water play area is the right call for the baby and 4-year-old; older kids can handle the main pool', kids: ['all'] },
-      { act: 'Playground and picnic at Central Park', note: 'Pack dinner early and make it an outing; the event lawn area works well for a blanket setup', kids: ['all'] },
-    ],
-    evening: [
-      { act: 'Evening lake walk or trail ride', note: 'Best light of the day; cooler air by 6pm most evenings in spring and fall', kids: ['all'] },
-      { act: 'Outdoor play and dinner at the event lawn', note: 'Bring portable chairs and dinner; kids can run while adults decompress', kids: ['all'] },
-      { act: 'Basketball or open court time', note: '7-year-old can work on dribbling; younger ones run the sidelines', kids: ['all'] },
-      { act: 'Backyard or cul-de-sac play', note: 'Low-effort option — chalk, bubbles, or ride-ons for the baby while the older kids free-play', kids: ['all'] },
-    ]
+  // Good / warm
+  const byBlock = {
+    morning:   ['trail_walk', 'playground', 'farm_visit', 'bike_ride', 'crawford_park', 'median_park', 'farmhouse_coffee'],
+    afternoon: ['lake_walk', 'sand_volleyball', 'pool', 'picnic_lawn', 'crawford_park', 'playground', 'bike_ride'],
+    evening:   ['lake_walk', 'picnic_lawn', 'basketball', 'backyard', 'trail_walk', 'bike_ride', 'sand_volleyball'],
   };
-
-  const pool = activities[block];
-  // Pick based on day-of-week variation to avoid repetition
-  const dayHash = kids.length + (hasInfant ? 2 : 0) + (hasSeven ? 1 : 0);
-  return pool[dayHash % pool.length];
+  const pool = byBlock[block];
+  return pool[seed % pool.length];
 }
 
-// ── Main render ──────────────────────────────────────────────────────────
+// ── Photo fetching ────────────────────────────────────────────────────────
+async function fetchPhoto(query) {
+  if (photoCache[query]) return photoCache[query];
+  try {
+    const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=8&orientation=landscape&client_id=${UNSPLASH_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.results && data.results.length > 0) {
+      const idx = Math.floor(Math.random() * Math.min(5, data.results.length));
+      const photoUrl = data.results[idx].urls.small;
+      photoCache[query] = photoUrl;
+      return photoUrl;
+    }
+  } catch(e) {}
+  return null;
+}
+
+// ── Google Calendar URL builder ───────────────────────────────────────────
+function buildCalUrl(title, dateObj, startTime, endTime) {
+  const dateStr = dateObj.toISOString().split('T')[0].replace(/-/g, '');
+  const start = dateStr + 'T' + startTime.replace(':', '') + '00';
+  const end   = dateStr + 'T' + endTime.replace(':', '') + '00';
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    dates: `${start}/${end}`,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────
+let currentModalPhoto = null;
+
+function openModal(key, kids, dateObj, block) {
+  const a = ACTIVITIES[key];
+  if (!a) return;
+  const bt = BLOCK_TIMES[block];
+
+  document.getElementById('modal-category').textContent = a.category;
+  document.getElementById('modal-title').textContent = a.act;
+  document.getElementById('modal-description').textContent = a.description;
+
+  const kidsStr = kids.length > 0 ? 'With: ' + kids.join(', ') : '';
+  document.getElementById('modal-kids').textContent = kidsStr;
+
+  // Address
+  const addrEl = document.getElementById('modal-address');
+  if (a.address === 'Home') {
+    addrEl.innerHTML = `<span>📍 Home</span>`;
+  } else {
+    addrEl.innerHTML = `<span>📍 ${a.address}</span>`;
+  }
+
+  // Maps button
+  const mapsBtn = document.getElementById('modal-maps-btn');
+  if (a.maps) {
+    mapsBtn.href = `https://waze.com/ul?q=${a.maps}&navigate=yes`;
+    mapsBtn.style.display = 'flex';
+  } else {
+    mapsBtn.style.display = 'none';
+  }
+
+  // Calendar button
+  const kidsLabel = kids.length === 1 ? kids[0] : kids.slice(0, -1).join(', ') + ' & ' + kids[kids.length - 1];
+  const calTitle = kids.length > 0 ? `${a.act} with ${kidsLabel}` : a.act;
+  document.getElementById('modal-cal-btn').href = buildCalUrl(calTitle, dateObj, bt.start, bt.end);
+
+  // Photo
+  const photoEl = document.getElementById('modal-photo');
+  photoEl.style.opacity = '0.3';
+  photoEl.src = '';
+  fetchPhoto(a.photo).then(url => {
+    if (url) {
+      photoEl.src = url;
+      photoEl.onload = () => { photoEl.style.opacity = '1'; photoEl.style.transition = 'opacity 0.3s'; };
+    } else {
+      photoEl.style.display = 'none';
+    }
+  });
+
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+
+// ── Main render ───────────────────────────────────────────────────────────
 async function loadWeather() {
   try {
-    // Get 7-day hourly forecast — temp in F, precipitation probability
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,precipitation_probability,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&windspeed_unit=mph&timezone=America%2FChicago&forecast_days=7`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&timezone=America%2FChicago&forecast_days=7`;
     const res = await fetch(url);
-    if (!res.ok) throw new Error('API error');
+    if (!res.ok) throw new Error();
     const data = await res.json();
-
     renderWeek(data);
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
-  } catch (e) {
+
+    // Last updated
+    const now = new Date();
+    const mins = Math.floor((now - now) / 60000); // always 0 on fresh load
+    document.getElementById('last-updated').textContent = `Updated just now`;
+  } catch(e) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('error').style.display = 'block';
   }
@@ -520,60 +690,61 @@ async function loadWeather() {
 
 function renderWeek(data) {
   const grid = document.getElementById('week-grid');
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
-  const dates = data.daily.time.map(t => {
-    const d = new Date(t + 'T00:00:00');
-    return d;
-  });
-
-  document.getElementById('week-range').textContent = getWeekLabel(dates);
-
+  const today = new Date(); today.setHours(0,0,0,0);
   const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const dates = data.daily.time.map(t => new Date(t + 'T00:00:00'));
+  document.getElementById('week-range').textContent =
+    `${dates[0].toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${dates[6].toLocaleDateString('en-US',{month:'short',day:'numeric'})}, ${dates[6].getFullYear()}`;
 
   dates.forEach((date, i) => {
     const maxTemp = Math.round(data.daily.temperature_2m_max[i]);
     const minTemp = Math.round(data.daily.temperature_2m_min[i]);
     const precipProb = data.daily.precipitation_probability_max[i];
     const isToday = date.getTime() === today.getTime();
-
-    const cond = interpretWeather(maxTemp, precipProb, 0);
+    const cond = interpretWeather(maxTemp, precipProb);
     const kidsAvail = getKidsAvailable(date);
 
     const card = document.createElement('div');
     card.className = `day-card${isToday ? ' today' : ''}`;
 
-    const blocks = [
-      { key: 'morning', label: 'Morning', time: '8 – 11am', cls: 'block-morning' },
-      { key: 'afternoon', label: 'Afternoon', time: '2 – 4:30pm', cls: 'block-afternoon' },
-      { key: 'evening', label: 'Evening', time: '4:30 – 7pm', cls: 'block-evening' },
+    const blockDefs = [
+      { key: 'morning',   cls: 'block-morning' },
+      { key: 'afternoon', cls: 'block-afternoon' },
+      { key: 'evening',   cls: 'block-evening' },
     ];
 
-    const blocksHTML = blocks.map(b => {
+    const blocksHTML = blockDefs.map((b, bi) => {
       const kids = kidsAvail[b.key];
+      const bt = BLOCK_TIMES[b.key];
       if (kids.length === 0) {
         return `<div class="time-block ${b.cls}">
-          <div class="block-label">${b.label} <span style="font-weight:300;opacity:0.6">${b.time}</span></div>
+          <div class="block-overlay"></div>
           <div class="no-kids">No kids available</div>
         </div>`;
       }
-      const activity = getActivity(b.key, kids, cond.mode, precipProb, maxTemp);
-      const kidsStr = kids.join(', ');
-      const photoId = `photo-${i}-${b.key}`;
-      return `<div class="time-block ${b.cls}">
-        <div class="block-label">${b.label} <span style="font-weight:300;opacity:0.6">${b.time}</span></div>
-        <div class="block-kids">${kidsStr}</div>
-        <div class="block-activity">${activity.act}</div>
-        ${activity.note ? `<div class="block-note">${activity.note}</div>` : ''}
-        <img id="${photoId}" class="block-photo" data-query="${getPhotoQuery(activity.act)}" alt="${activity.act}" />
+      const actKey = getActivityKey(b.key, cond.mode, i);
+      const a = ACTIVITIES[actKey];
+      const photoId = `p-${i}-${b.key}`;
+      return `<div class="time-block ${b.cls}" onclick="openModal('${actKey}', ${JSON.stringify(kids)}, new Date('${date.toISOString()}'), '${b.key}')">
+        <img id="${photoId}" class="block-bg-img" data-query="${a.photo}" alt="${a.act}" />
+        <div class="block-overlay"></div>
+        <div class="block-content">
+          <div class="block-label">${bt.label} · ${bt.display}</div>
+          <div class="block-kids">${kids.join(', ')}</div>
+          <div class="block-activity">${a.act}</div>
+          <div class="block-tap-hint">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Tap for details
+          </div>
+        </div>
       </div>`;
     }).join('');
 
     card.innerHTML = `
       <div class="day-header">
-        <div class="day-name">${DAY_NAMES[date.getDay()]}${isToday ? ' &mdash; Today' : ''}</div>
+        <div class="day-name">${DAY_NAMES[date.getDay()]}${isToday ? ' — Today' : ''}</div>
         <div class="day-date">${MONTH_NAMES[date.getMonth()]} ${date.getDate()}</div>
       </div>
       <div class="day-weather">
@@ -583,30 +754,20 @@ function renderWeek(data) {
         </div>
         <div class="condition-badge ${cond.cls}">${cond.label}</div>
       </div>
-      <div class="blocks">${blocksHTML}</div>
-    `;
+      <div class="blocks">${blocksHTML}</div>`;
 
     grid.appendChild(card);
   });
 
-  const now = new Date();
-  document.getElementById('updated-note').textContent = `Forecast updated ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at ${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} · Open-Meteo · Reload to refresh`;
-
-  // Load photos asynchronously after render
-  const photoImgs = document.querySelectorAll('.block-photo[data-query]');
-  photoImgs.forEach(async (img) => {
-    const query = img.getAttribute('data-query');
-    const url = await fetchPhoto(query);
-    if (url) {
-      img.src = url;
-      img.onload = () => img.classList.add('loaded');
-    } else {
-      img.style.display = 'none';
-    }
+  // Load photos async
+  document.querySelectorAll('.block-bg-img[data-query]').forEach(async img => {
+    const url = await fetchPhoto(img.getAttribute('data-query'));
+    if (url) { img.src = url; img.onload = () => img.classList.add('loaded'); }
   });
 }
 
 loadWeather();
 </script>
+
 </body>
 </html>
