@@ -27,7 +27,7 @@
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
 header {
-background: var(–deep);
+background: #1a2e3b;
 padding: 24px 24px 16px;
 }
 .header-top {
@@ -70,7 +70,7 @@ font-weight: 300;
 display: flex;
 gap: 14px;
 padding: 10px 24px;
-background: var(–deep);
+background: #1a2e3b;
 border-top: 1px solid #2a3f50;
 flex-wrap: wrap;
 }
@@ -727,7 +727,9 @@ function renderWeek(data) {
       const actKey = getActivityKey(b.key, cond.mode, i);
       const a = ACTIVITIES[actKey];
       const photoId = `p-${i}-${b.key}`;
-      return `<div class="time-block ${b.cls}" onclick="openModal('${actKey}', ${JSON.stringify(kids)}, new Date('${date.toISOString()}'), '${b.key}')">
+      const kidsEncoded = encodeURIComponent(JSON.stringify(kids));
+      const dateStr = data.daily.time[i]; // e.g. "2026-03-09"
+      return `<div class="time-block ${b.cls}" data-act="${actKey}" data-kids="${kidsEncoded}" data-date="${dateStr}" data-block="${b.key}">
         <img id="${photoId}" class="block-bg-img" data-query="${a.photo}" alt="${a.act}" />
         <div class="block-overlay"></div>
         <div class="block-content">
@@ -763,6 +765,18 @@ function renderWeek(data) {
   document.querySelectorAll('.block-bg-img[data-query]').forEach(async img => {
     const url = await fetchPhoto(img.getAttribute('data-query'));
     if (url) { img.src = url; img.onload = () => img.classList.add('loaded'); }
+  });
+
+  // Attach tap handlers via event delegation (iOS Safari safe)
+  document.getElementById('week-grid').addEventListener('click', function(e) {
+    const block = e.target.closest('.time-block[data-act]');
+    if (!block) return;
+    const actKey = block.getAttribute('data-act');
+    const kids = JSON.parse(decodeURIComponent(block.getAttribute('data-kids')));
+    const dateStr = block.getAttribute('data-date');
+    const dateObj = new Date(dateStr + 'T12:00:00');
+    const blockKey = block.getAttribute('data-block');
+    openModal(actKey, kids, dateObj, blockKey);
   });
 }
 
