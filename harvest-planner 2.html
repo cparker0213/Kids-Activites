@@ -26,9 +26,16 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
+/* Sticky header */
+.sticky-top {
+position: sticky;
+top: 0;
+z-index: 50;
+}
+
 header {
 background: #1a2e3b;
-padding: 24px 24px 16px;
+padding: 20px 20px 12px;
 }
 .header-top {
 display: flex;
@@ -38,21 +45,21 @@ gap: 12px;
 }
 .header-left h1 {
 font-family: ‘DM Serif Display’, serif;
-font-size: 1.7rem;
+font-size: 1.5rem;
 color: #fff;
 line-height: 1.1;
 letter-spacing: -0.02em;
 }
 .header-left p {
-font-size: 0.72rem;
+font-size: 0.68rem;
 color: #8fa8b8;
-margin-top: 4px;
+margin-top: 3px;
 font-weight: 300;
 letter-spacing: 0.04em;
 text-transform: uppercase;
 }
 .last-updated {
-font-size: 0.68rem;
+font-size: 0.65rem;
 color: #8fa8b8;
 text-align: right;
 font-weight: 300;
@@ -60,16 +67,16 @@ white-space: nowrap;
 margin-top: 4px;
 }
 .week-range-label {
-font-size: 0.7rem;
+font-size: 0.68rem;
 color: #8fa8b8;
-margin-top: 10px;
+margin-top: 8px;
 font-weight: 300;
 }
 
 .legend {
 display: flex;
 gap: 14px;
-padding: 10px 24px;
+padding: 9px 20px;
 background: #1a2e3b;
 border-top: 1px solid #2a3f50;
 flex-wrap: wrap;
@@ -78,7 +85,7 @@ flex-wrap: wrap;
 display: flex;
 align-items: center;
 gap: 5px;
-font-size: 0.68rem;
+font-size: 0.65rem;
 color: #8fa8b8;
 font-weight: 300;
 }
@@ -108,42 +115,41 @@ flex-direction: column;
 transition: box-shadow 0.15s;
 }
 .day-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
-.day-card.today .day-header { background: var(–warm); }
-.day-card.today .day-name, .day-card.today .day-date { color: #fff; }
+.day-card.today .day-header { background: #c8773a; }
 
-.day-header { background: var(–deep); padding: 10px 12px 9px; }
-.day-name { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #8fa8b8; }
-.day-date { font-family: ‘DM Serif Display’, serif; font-size: 1.4rem; color: #fff; line-height: 1; margin-top: 2px; }
+.day-header { background: #1a2e3b; padding: 12px 14px 10px; }
+.day-name { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8fa8b8; }
+.day-date { font-family: ‘DM Serif Display’, serif; font-size: 1.6rem; color: #ffffff; line-height: 1; margin-top: 2px; }
 
 .day-weather {
-padding: 9px 12px;
+padding: 10px 14px;
 border-bottom: 1px solid var(–border);
 display: flex;
 align-items: center;
 justify-content: space-between;
 gap: 6px;
 }
-.temp-range { font-size: 0.78rem; font-weight: 500; }
-.temp-range span { color: var(–muted); font-weight: 300; font-size: 0.72rem; }
-.rain-pct { font-size: 0.65rem; color: var(–rain); font-weight: 300; }
+.temp-range { font-size: 0.82rem; font-weight: 500; color: #1a2e3b; }
+.temp-range span { color: var(–muted); font-weight: 300; font-size: 0.75rem; }
+.rain-pct { font-size: 0.68rem; color: var(–rain); font-weight: 300; }
 
 .condition-badge {
-font-size: 0.62rem; font-weight: 500; letter-spacing: 0.04em;
-padding: 3px 7px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
+padding: 4px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
 }
 .badge-normal { background: var(–green-light); color: var(–green); }
 .badge-hot { background: var(–hot-light); color: var(–hot); }
 .badge-rain { background: var(–rain-light); color: var(–rain); }
 
-.blocks { padding: 9px 10px 10px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+.blocks { padding: 10px 10px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 
 /* Image-as-tile block */
 .time-block {
-border-radius: 8px;
+border-radius: 10px;
 overflow: hidden;
 cursor: pointer;
 position: relative;
-min-height: 120px;
+min-height: 140px;
 display: flex;
 flex-direction: column;
 justify-content: flex-end;
@@ -196,18 +202,19 @@ opacity: 0.85;
 .block-afternoon .block-label { color: #7dd4a8; }
 .block-evening .block-label { color: #a0aaee; }
 
-.block-kids { font-size: 0.65rem; color: rgba(255,255,255,0.95); margin-bottom: 3px; font-weight: 400; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
-.block-activity { font-size: 0.88rem; font-weight: 600; color: #fff; line-height: 1.25; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+.block-kids { font-size: 0.7rem; color: #ffffff; margin-bottom: 4px; font-weight: 500; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+.block-activity { font-size: 0.95rem; font-weight: 700; color: #fff; line-height: 1.25; text-shadow: 0 1px 5px rgba(0,0,0,0.7); }
 
 .block-tap-hint {
-font-size: 0.6rem;
-color: rgba(255,255,255,0.85);
-margin-top: 4px;
-font-weight: 400;
+font-size: 0.62rem;
+color: #ffffff;
+margin-top: 5px;
+font-weight: 500;
 display: flex;
 align-items: center;
 gap: 3px;
-text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+opacity: 0.85;
 }
 
 .no-kids {
@@ -245,10 +252,6 @@ animation: slideUp 0.25s ease;
 .modal-handle {
 width: 48px; height: 5px; background: #c0cdd6;
 border-radius: 3px; margin: 0 auto 16px;
-padding: 14px 0;
-background-clip: content-box;
-cursor: grab;
-touch-action: none;
 }
 
 .modal-top-row {
@@ -314,6 +317,7 @@ color: var(–muted); cursor: pointer; width: 100%;
 </head>
 <body>
 
+<div class="sticky-top">
 <header>
   <div class="header-top">
     <div class="header-left">
@@ -330,6 +334,7 @@ color: var(–muted); cursor: pointer; width: 100%;
   <div class="legend-item"><div class="legend-dot" style="background:#3d7a5e"></div>Afternoon 2–4:30pm</div>
   <div class="legend-item"><div class="legend-dot" style="background:#4a4a90"></div>Evening 4:30–7pm</div>
   <div class="legend-item" style="margin-left:auto;font-style:italic">Tap any activity for details</div>
+</div>
 </div>
 
 <div class="main">
@@ -818,42 +823,49 @@ function renderWeek(data) {
   });
 }
 
-// ── Swipe to dismiss modal ────────────────────────────────────────────────
+// ── Swipe left or right to dismiss modal ─────────────────────────────────
 (function() {
+  let startX = 0;
   let startY = 0;
-  let isDragging = false;
   const modal = document.getElementById('modal');
-  const handle = modal.querySelector('.modal-handle');
   const overlay = document.getElementById('modal-overlay');
 
-  handle.addEventListener('touchstart', function(e) {
+  modal.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
-    isDragging = true;
     modal.style.transition = 'none';
   }, { passive: true });
 
-  handle.addEventListener('touchmove', function(e) {
-    if (!isDragging) return;
-    const delta = e.touches[0].clientY - startY;
-    if (delta > 0) {
-      modal.style.transform = `translateY(${delta}px)`;
+  modal.addEventListener('touchmove', function(e) {
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    // Only track horizontal swipes
+    if (Math.abs(dx) > Math.abs(dy)) {
+      modal.style.transform = `translateX(${dx}px)`;
+      modal.style.opacity = `${1 - Math.abs(dx) / 300}`;
     }
   }, { passive: true });
 
-  handle.addEventListener('touchend', function(e) {
-    if (!isDragging) return;
-    isDragging = false;
-    const delta = e.changedTouches[0].clientY - startY;
-    modal.style.transition = 'transform 0.25s ease';
-    if (delta > 80) {
-      modal.style.transform = 'translateY(100%)';
+  modal.addEventListener('touchend', function(e) {
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    modal.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 80) {
+      // Dismiss
+      const direction = dx > 0 ? '120%' : '-120%';
+      modal.style.transform = `translateX(${direction})`;
+      modal.style.opacity = '0';
       setTimeout(() => {
         overlay.classList.remove('open');
         modal.style.transform = '';
+        modal.style.opacity = '';
         modal.style.transition = '';
       }, 250);
     } else {
+      // Snap back
       modal.style.transform = '';
+      modal.style.opacity = '';
     }
   }, { passive: true });
 })();
