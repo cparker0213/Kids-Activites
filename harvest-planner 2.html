@@ -143,7 +143,7 @@ border-radius: 8px;
 overflow: hidden;
 cursor: pointer;
 position: relative;
-min-height: 90px;
+min-height: 120px;
 display: flex;
 flex-direction: column;
 justify-content: flex-end;
@@ -196,8 +196,8 @@ opacity: 0.85;
 .block-afternoon .block-label { color: #7dd4a8; }
 .block-evening .block-label { color: #a0aaee; }
 
-.block-kids { font-size: 0.58rem; color: rgba(255,255,255,0.7); margin-bottom: 3px; font-weight: 300; }
-.block-activity { font-size: 0.75rem; font-weight: 600; color: #fff; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+.block-kids { font-size: 0.65rem; color: rgba(255,255,255,0.75); margin-bottom: 3px; font-weight: 300; }
+.block-activity { font-size: 0.88rem; font-weight: 600; color: #fff; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
 
 .block-tap-hint {
 font-size: 0.55rem;
@@ -242,6 +242,28 @@ animation: slideUp 0.25s ease;
 @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
 .modal-handle { width: 36px; height: 4px; background: var(–border); border-radius: 2px; margin: 0 auto 16px; }
+
+.modal-top-row {
+display: flex;
+justify-content: flex-end;
+margin-bottom: 4px;
+margin-top: -8px;
+}
+
+.btn-modal-close {
+background: #f0f4f7;
+border: none;
+border-radius: 50%;
+width: 30px;
+height: 30px;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+color: var(–muted);
+flex-shrink: 0;
+}
+.btn-modal-close:hover { background: #e0e8ee; }
 .modal-category { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(–muted); margin-bottom: 6px; }
 .modal-title { font-family: ‘DM Serif Display’, serif; font-size: 1.4rem; color: var(–text); line-height: 1.2; margin-bottom: 8px; }
 .modal-photo { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; margin-bottom: 14px; background: var(–border); }
@@ -257,13 +279,14 @@ font-weight: 300;
 .modal-actions { display: flex; flex-direction: column; gap: 9px; }
 
 .btn-cal {
-display: flex; align-items: center; justify-content: center; gap: 8px;
-background: var(–deep); color: #fff;
-border: none; border-radius: 8px; padding: 12px 16px;
-font-family: ‘DM Sans’, sans-serif; font-size: 0.8rem; font-weight: 500;
+display: flex !important; align-items: center; justify-content: center; gap: 8px;
+background: #1a2e3b !important; color: #ffffff !important;
+border: none; border-radius: 8px; padding: 14px 16px;
+font-family: ‘DM Sans’, sans-serif; font-size: 0.85rem; font-weight: 500;
 cursor: pointer; text-decoration: none; width: 100%;
+-webkit-appearance: none;
 }
-.btn-cal:hover { background: #243d50; }
+.btn-cal:hover { background: #243d50 !important; }
 
 .btn-maps {
 display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -314,6 +337,11 @@ color: var(–muted); cursor: pointer; width: 100%;
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal" id="modal">
     <div class="modal-handle"></div>
+    <div class="modal-top-row">
+      <button class="btn-modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
     <div class="modal-category" id="modal-category"></div>
     <div class="modal-title" id="modal-title"></div>
     <img class="modal-photo" id="modal-photo" src="" alt="" />
@@ -782,7 +810,78 @@ function renderWeek(data) {
   });
 }
 
+// ── Swipe to dismiss modal ────────────────────────────────────────────────
+(function() {
+  let startY = 0;
+  let isDragging = false;
+  const modal = document.getElementById('modal');
+
+  modal.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].clientY;
+    isDragging = true;
+  }, { passive: true });
+
+  modal.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+    const delta = e.touches[0].clientY - startY;
+    if (delta > 0) {
+      modal.style.transform = `translateY(${delta}px)`;
+      modal.style.transition = 'none';
+    }
+  }, { passive: true });
+
+  modal.addEventListener('touchend', function(e) {
+    isDragging = false;
+    const delta = e.changedTouches[0].clientY - startY;
+    modal.style.transition = 'transform 0.25s ease';
+    if (delta > 100) {
+      modal.style.transform = 'translateY(100%)';
+      setTimeout(() => {
+        document.getElementById('modal-overlay').classList.remove('open');
+        modal.style.transform = '';
+        modal.style.transition = '';
+      }, 250);
+    } else {
+      modal.style.transform = '';
+    }
+  }, { passive: true });
+})();
+
 loadWeather();
+
+// Swipe down to dismiss modal
+(function() {
+  const modal = document.getElementById('modal');
+  const overlay = document.getElementById('modal-overlay');
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+
+  modal.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].clientY;
+    isDragging = true;
+    modal.style.transition = 'none';
+  }, { passive: true });
+
+  modal.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+    currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+    if (diff > 0) {
+      modal.style.transform = `translateY(${diff}px)`;
+    }
+  }, { passive: true });
+
+  modal.addEventListener('touchend', function() {
+    isDragging = false;
+    modal.style.transition = 'transform 0.25s ease';
+    const diff = currentY - startY;
+    if (diff > 80) {
+      overlay.classList.remove('open');
+    }
+    modal.style.transform = '';
+  });
+})();
 </script>
 
 </body>
